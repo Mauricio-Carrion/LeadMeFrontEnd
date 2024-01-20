@@ -1,5 +1,6 @@
 import { PrimeReactProvider } from "primereact/api";
 import "../styles/global.sass";
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 
 export const metadata = {
   title: "LeadMe",
@@ -14,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <PrimeReactProvider>
-        <body className="bg-gray">{children}</body>
+        <body>{children}</body>
       </PrimeReactProvider>
     </html>
   );
