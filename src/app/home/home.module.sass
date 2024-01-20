@@ -1,0 +1,21 @@
+.homelayout
+  display: grid
+  height: 100vh
+  width: 100%
+  grid-template-columns: 10rem 1fr
+  grid-template-rows: 5rem 1fr 
+  grid-template-areas:"menu header" "menu content" "menu footer"
+  
+.menu
+  display: flex
+  align-items: center
+  grid-area: menu
+  height: 100% 
+
+.header
+  grid-area: header
+  background: blue
+
+.content
+  grid-area: content
+  background: green
