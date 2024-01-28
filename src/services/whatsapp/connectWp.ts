@@ -1,12 +1,17 @@
 import { getServer } from "@/config/serverConfig";
+import { AxiosResponse } from "axios";
 
 type ConnectWpProps = {
   token: string;
 };
 
-export const connectWp = async ({ token }: ConnectWpProps): Promise<any> => {
-  const response = await getServer.post("/connect_wp", {
-    Authorization: `Bearer ${token}`,
+export const connectWp = async ({
+  token,
+}: ConnectWpProps): Promise<AxiosResponse> => {
+  const response = await getServer.get("/connect_wp", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
-  return response.data;
+  return response;
 };

@@ -5,18 +5,36 @@ import { OverlayPanel } from "primereact/overlaypanel";
 import styles from "./whatsappbutton.module.sass";
 import { useRef, useState } from "react";
 import QRCode from "react-qr-code";
-import { ProgressSpinner } from "primereact/progressspinner";
+import { connectWp } from "@/services/whatsapp/connectWp";
+import Cookies from "js-cookie";
 
 export default function WhatsAppButton(): React.ReactElement {
   const op = useRef<any>(null);
   const [loading, setLoading] = useState(true);
+  const [qrCode, setQrCode] = useState<string>("");
+  const token = Cookies.get("LeadMeToken");
+  const handleClick = async (e: any) => {
+    op.current?.toggle(e);
+    if (token && qrCode == "") {
+      try {
+        const qrString = await connectWp({ token: token });
 
-  const requestQrCode = {};
+        console.log(qrString);
+
+        if (qrString.status === 200) {
+          setQrCode(qrString.data.qrCode);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
   return (
     <HeaderButton
       onClick={(e) => {
-        op.current?.toggle(e);
+        handleClick(e);
       }}
     >
       <Badge severity="success" className={styles.badge} />
@@ -37,7 +55,7 @@ export default function WhatsAppButton(): React.ReactElement {
               Conecte o WhatsApp
             </h4>
             <QRCode
-              value="https://web.whatsapp.com"
+              value={qrCode}
               className={styles.qrcode}
               fgColor="#fff"
               bgColor="transparent"

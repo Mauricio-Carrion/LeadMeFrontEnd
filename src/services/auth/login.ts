@@ -1,17 +1,23 @@
 import { getServer } from "@/config/serverConfig";
-
+import { AxiosResponse } from "axios";
 type LoginProps = {
   email: string;
   password: string;
 };
 
-export const login = async ({ email, password }: LoginProps): Promise<any> => {
+export const login = async ({
+  email,
+  password,
+}: LoginProps): Promise<AxiosResponse | undefined> => {
   try {
-    const response = await getServer.post("/login", {
+    const response: AxiosResponse = await getServer.post("/login", {
       email,
       password,
     });
-    return response.data;
+
+    if (response.status === 200) {
+      return response;
+    }
   } catch (error) {
     console.error(error);
   }

@@ -4,11 +4,12 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   console.log(request.cookies);
 
-  // const currentUser = request.cookies.get("currentUser")?.value;
+  const leadMeToken = request.cookies.get("LeadMeToken")?.value;
 
-  // if (currentUser) {
-  //   return NextResponse.redirect(new URL("/home/dashboard", request.url));
-  // }
+  if (leadMeToken) {
+    return NextResponse.next();
+  }
+
   return NextResponse.redirect(new URL("/login", request.url));
 }
 
