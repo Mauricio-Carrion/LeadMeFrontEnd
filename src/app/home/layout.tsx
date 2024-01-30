@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./home.module.sass";
 import Menu from "./components/Menu/Menu";
 import UserInfo from "./components/UserInfo/UserInfo";
