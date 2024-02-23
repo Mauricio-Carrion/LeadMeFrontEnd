@@ -3,42 +3,19 @@ import HeaderButton from "../HeaderButton/HeaderButton";
 import { SiWhatsapp } from "react-icons/si";
 import { OverlayPanel } from "primereact/overlaypanel";
 import styles from "./whatsappbutton.module.sass";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import QRCode from "react-qr-code";
 import { connectWp } from "@/services/whatsapp/connectWp";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
-import { getUserJid } from "@/services/user/getUserJid";
+import { useJid } from "@/hooks/useJid";
+import Loader from "../Loader/Loader";
 
 export default function WhatsAppButton(): React.ReactElement {
   const op = useRef<any>(null);
   const [loading, setLoading] = useState(true);
   const [qrCode, setQrCode] = useState<string>("");
-  const [jid, setJid] = useState<string>("");
   const token = Cookies.get("LeadMeToken");
-
-  useEffect(() => {
-    getJid();
-  }, [jid, qrCode]);
-
-  const getJid = async () => {
-    const token = Cookies.get("LeadMeToken");
-    if (token) {
-      try {
-        const userUuid: any = jwtDecode(token);
-
-        if (userUuid) {
-          const jid = await getUserJid(userUuid.uuid, token);
-
-          if (jid && jid.status === 200) {
-            setJid(jid.data.jid);
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
+  const jid = useJid(token!);
 
   const handleClick = async (e: any) => {
     op.current?.toggle(e);
@@ -72,7 +49,7 @@ export default function WhatsAppButton(): React.ReactElement {
       <SiWhatsapp size={20} />
       <OverlayPanel className={styles.poverlaypanel} ref={op}>
         {loading ? (
-          <span className={styles.loader}></span>
+          <Loader />
         ) : jid == "" ? (
           <>
             <h4
