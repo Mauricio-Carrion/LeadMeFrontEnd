@@ -9,13 +9,17 @@ import Loader from "@/app/home/components/Loader/Loader";
 
 export default function ContactSection() {
   const [loading, setLoading] = useState(true);
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
   const [contacts, setContacts] = useState<Contacts[]>();
-  const [page, setPage] = useState(1);
+  const [actualPage, setActualPage] = useState(1);
   const cookieToken = Cookies.get("LeadMeToken");
   const jid = useJid(cookieToken!);
 
-  const loadContacts = (page = 1) => {
-    if (jid != "") {
+  const loadContacts = (page = 0) => {
+    //if (page > 1) {
+    setIsLoadingPage(true);
+    //}
+    if (jid != "" && page) {
       getContacts({
         token: cookieToken!,
         wpNumber: jid.split(":")[0],
@@ -23,20 +27,38 @@ export default function ContactSection() {
         page: page.toString(),
       }).then((data) => {
         console.log(data);
-        setContacts(data);
+        setContacts((curr) => {
+          if (curr) {
+            return [...curr, ...data];
+          } else {
+            return data;
+          }
+        });
         setLoading(false);
+        setIsLoadingPage(false);
       });
     }
   };
 
+  const handleScroll = (e: any) => {
+    if (isLoadingPage) {
+      return;
+    }
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom) {
+      setActualPage(actualPage + 10);
+    }
+  };
+
   useEffect(() => {
-    loadContacts();
-  }, [jid, page]);
+    loadContacts(actualPage);
+  }, [jid, actualPage]);
 
   return (
-    <section className={styles.section}>
+    <section className={styles.contactSection} onScroll={handleScroll}>
       {loading ? (
-        <Loader />
+        <Loader color="#3da5d9" size={2} />
       ) : (
         <>
           {contacts?.map((contact) => {
@@ -51,6 +73,8 @@ export default function ContactSection() {
               />
             );
           })}
+
+          {isLoadingPage && <Loader color="#3da5d9" size={1} top="100vh" />}
         </>
       )}
     </section>

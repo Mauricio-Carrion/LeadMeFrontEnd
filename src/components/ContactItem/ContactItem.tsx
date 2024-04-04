@@ -15,12 +15,6 @@ export default function ContactItem({
 }: ContactItemProps) {
   return (
     <button className={styles.contactItem}>
-      <Avatar
-        style={{ marginRight: "5%" }}
-        image="https://i.pravatar.cc/500"
-        size="xlarge"
-        shape="circle"
-      />
       <h3 style={{ width: "15%" }}>{fullname}</h3>
       <Divider layout="vertical" />
       <h3 style={{ width: "15%" }}>{phone}</h3>
